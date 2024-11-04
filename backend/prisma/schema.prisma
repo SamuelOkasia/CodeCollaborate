@@ -1,0 +1,52 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  googleId  String?  @unique
+  githubId  String?  @unique
+  role      String   @default("contributor")
+  codeReviews CodeReview[] // This line creates the relation
+  feedback Feedback[]  // A user can leave many feedbacks
+
+
+}
+
+model CodeVersion {
+  id           String      @id @default(uuid())
+  codeReviewId String      // The related code review
+  codeReview   CodeReview  @relation(fields: [codeReviewId], references: [id])
+  version      Int         // Version number of the code
+  code         String      // The code itself
+  createdAt    DateTime    @default(now())  // When this version was created
+}
+
+model CodeReview {
+  id        String   @id @default(uuid())
+  userId    String   // ID of the user who submitted the code
+  user      User     @relation(fields: [userId], references: [id])
+  code      String   // The code submitted for review
+  createdAt DateTime @default(now())
+  feedback Feedback[]  // A user can leave many feedbacks
+  78yuijlk;.j
+   versions     CodeVersion[] // Add relation to CodeVersion
+
+
+}
+
+model Feedback {
+  id          String   @id @default(uuid())
+  userId      String   // The reviewer who leaves the feedback
+  user        User     @relation(fields: [userId], references: [id])
+  codeReviewId String   // The code review being commented on
+  codeReview   CodeReview @relation(fields: [codeReviewId], references: [id])
+  comment     String   // The feedback/comment content
+  createdAt   DateTime @default(now())
+}

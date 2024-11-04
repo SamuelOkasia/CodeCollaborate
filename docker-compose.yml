@@ -1,0 +1,15 @@
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: codecollaborate_user       # Set your PostgreSQL user
+      POSTGRES_PASSWORD: codecollaborate_pass   # Set your PostgreSQL password
+      POSTGRES_DB: codecollaborate_db           # Set your database name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist the database data
+
+volumes:
+  postgres_data:
